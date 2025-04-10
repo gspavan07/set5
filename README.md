@@ -41,53 +41,46 @@ gcc lex.yy.c -o lex.out -ll
 ```c
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h> // Include this for isupper
+#define MAX 10
 
-#define MAX_LINES 5
+char first[MAX], follow[MAX];
 
-void optimizeCode(char code[][100], int lines) {
-    const char *constant = "const int a = 5;";
-    const char *variable = "int b = a;";
-    for (int i = 0; i < lines; i++) {
-        if (strcmp(code[i], constant) == 0) {
-            // Constant propagation
-            for (int j = 0; j < lines; j++) {
-                if (strcmp(code[j], variable) == 0) {
-                    strcpy(code[j], "int b = 5;"); // Replace 'a' with '5'
-                }
-            }
-        }
-        if (strstr(code[i], "unreachable") != NULL) {
-            strcpy(code[i], ""); // Dead code elimination
-        }
+void findFirst(char prod[], char result[]) {
+    if (!isupper(prod[3])) {
+        result[0] = prod[3]; // Terminal directly in FIRST
+        result[1] = '\0';
     }
-    // Print optimized code
-    printf("Optimized Code:\n");
-    for (int i = 0; i < lines; i++) {
-        if (strlen(code[i]) > 0) {
-            printf("%s\n", code[i]);
-        }
+}
+
+void findFollow(char start, char prod[], char result[]) {
+    if (prod[0] == start && prod[4] != '\0') {
+        result[0] = prod[4]; // FOLLOW derived from next symbol
+        result[1] = '\0';
+    } else {
+        result[0] = '$'; // Default FOLLOW for start symbol
+        result[1] = '\0';
     }
 }
 
 int main() {
-    char code[MAX_LINES][100] = {
-        "const int a = 5;",
-        "int b = a;",
-        "unreachable code;",
-        "int c = b;",
-        "return 0;"
-    };
-    int lines = 5;
-    optimizeCode(code, lines);
+    char production[] = "A->bC";
+    char start = 'A';
+
+    findFirst(production, first);
+    findFollow(start, production, follow);
+
+    printf("First(%c) = {%s}\n", start, first);
+    printf("Follow(%c) = {%s}\n", start, follow);
+
     return 0;
 }
+
 ```
 
 **Output**
 ```
-Optimized Code:
-int b = 5;
-int c = b;
-return 0;
+First(A) = {b}
+Follow(A) = {C}
 ```
 ---
