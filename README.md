@@ -1,5 +1,3 @@
-## ✅ Set 10 
-
 ### 1. Write a Lex program that detects relational and logical operators
 
 ```c
