@@ -1,104 +1,95 @@
 ## ✅ Set 10 
 
-### 1. Load `CoursesListComponent` when a button is clicked
+### 1. Write a Lex program that detects relational and logical operators
 
-**Generate Component:**
+```c
+%{
+#include <stdio.h>
+%}
+%%
+"<="    { printf("Relational Operator: <=\n"); }
+">="    { printf("Relational Operator: >=\n"); }
+"=="    { printf("Relational Operator: ==\n"); }
+"!="    { printf("Relational Operator: !=\n"); }
+"<"     { printf("Relational Operator: <\n"); }
+">"     { printf("Relational Operator: >\n"); }
 
-**app.component.ts**
-```ts
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+"&&"    { printf("Logical Operator: &&\n"); }
+"||"    { printf("Logical Operator: ||\n"); }
+"!"     { printf("Logical Operator: !\n"); }
 
-@Component({
-  selector: 'app-root',
-  imports: [CommonModule],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
-})
-export class AppComponent {
-  title = 'demo';
-  showCourses = false;
-  courses = ['Angular', 'React', 'Vue'];
+.|\n    { /* ignore other characters */ }
+%%
+
+int main() {
+    yylex();
+    return 0;
 }
-
-```
-
-**app.component.html**
-```html
-<button (click)="showCourses = !showCourses">View courses list</button>
-<div *ngIf="showCourses">
-  <ul>
-    <li *ngFor="let course of courses">{{ course }}</li>
-  </ul>
-</div>
-```
-
----
-
-### 2. Apply multiple CSS classes using `ngClass`
-
-**styles.css**
-```css
-.highlight {
-  background-color: yellow;
-  padding: 5px;
-}
-
-.bold {
-  font-weight: bolder;
+int yywrap() {
+    return 1;
 }
 ```
-
-**app.component.html**
-```html
-<p [ngClass]="{ highlight: isHighlighted, bold: isBold }">
-  Angular ngClass Directive Example
-</p>
-
-<button (click)="toggleHighlight()">Toggle Highlight</button>
-<button (click)="toggleBold()">Toggle Bold</button>
-```
-**app.component.ts**
-```ts
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-root',
-  imports: [CommonModule],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
-})
-export class AppComponent {
-  isHighlighted = false;
-  isBold = false;
-  toggleHighlight() {
-    this.isHighlighted = !this.isHighlighted;
-  }
-  toggleBold() {
-    this.isBold =!this.isBold;
-  }
-}
-
-```
-
----
-
-### 3. Create a component called `HelloComponent` and render "Hello Angular"
-
-**Generate Component:**
+### **Compilation & Execution**
 ```bash
-ng generate component hello
+lex pattern.l
+gcc lex.yy.c -o lex.out -ll
+./lex.out < input.txt
 ```
 
-**hello.component.html**
-```html
-<h2>Hello Angular</h2>
+---
+
+### 2. Perform constant propagation and dead code elimination on a given code block
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_LINES 5
+
+void optimizeCode(char code[][100], int lines) {
+    const char *constant = "const int a = 5;";
+    const char *variable = "int b = a;";
+    for (int i = 0; i < lines; i++) {
+        if (strcmp(code[i], constant) == 0) {
+            // Constant propagation
+            for (int j = 0; j < lines; j++) {
+                if (strcmp(code[j], variable) == 0) {
+                    strcpy(code[j], "int b = 5;"); // Replace 'a' with '5'
+                }
+            }
+        }
+        if (strstr(code[i], "unreachable") != NULL) {
+            strcpy(code[i], ""); // Dead code elimination
+        }
+    }
+    // Print optimized code
+    printf("Optimized Code:\n");
+    for (int i = 0; i < lines; i++) {
+        if (strlen(code[i]) > 0) {
+            printf("%s\n", code[i]);
+        }
+    }
+}
+
+int main() {
+    char code[MAX_LINES][100] = {
+        "const int a = 5;",
+        "int b = a;",
+        "unreachable code;",
+        "int c = b;",
+        "return 0;"
+    };
+    int lines = 5;
+    optimizeCode(code, lines);
+    return 0;
+}
 ```
 
-**app.component.html**
-```html
-<app-hello></app-hello>
+**Output**
 ```
-
+Optimized Code:
+int b = 5;
+int c = b;
+return 0;
+```
 ---
