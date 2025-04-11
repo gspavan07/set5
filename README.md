@@ -36,7 +36,7 @@ gcc lex.yy.c -o lex.out -ll
 
 ---
 
-### 2. Perform constant propagation and dead code elimination on a given code block
+### 2. First and follow 
 
 ```c
 #include <stdio.h>
